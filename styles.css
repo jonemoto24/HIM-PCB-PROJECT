@@ -21,9 +21,11 @@ header {
   padding: 15px 30px;
   color: white;
 }
-
+/* Título del header */
 header h1 {
   font-size: 32px;
+  text-align: center;
+  color: #ffffff;
 }
 
 .reporte-banner h1 {
@@ -142,6 +144,8 @@ legend {
 .btn-aceptar {
   background-color: #2fd3bd;
   color: white;
+  font-size: 16px;
+  width: 50%;
 }
 
 .btn-aceptar:hover {
