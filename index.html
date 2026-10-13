@@ -9,7 +9,7 @@
 <body>
 
     <header>
-        <h1>PCB Electronics</h1>
+        <h1>MALAMEN PCB</h1>
     </header>
 
     <main class="main-container">
@@ -36,7 +36,14 @@
 
                             <div class="campo">
                                 <label for="maquina">No. Máquina:</label>
-                                <input type="text" id="maquina" name="maquina" required>
+                                <input list="listaMaquinas" id="maquina" name="maquina" required>
+                                <datalist id="listaMaquinas">
+                                    <option value="Maquina 1"></option>
+                                    <option value="Maquina 2"></option>
+                                    <option value="Maquina 3"></option>
+                                    <option value="Maquina 4"></option>
+                                    <option value="Maquina 5"></option>
+                                </datalist>
                             </div>
 
                             <div class="campo">
