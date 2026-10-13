@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso y Reporte - PCB Electronics</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>PCB Electronics</h1>
+    </header>
+
+    <main class="main-container">
+        <div class="seccion-principal">
+            <div class="panel-izquierdo">
+                <img src="logo_PCB.jpg" alt="Imagen de soporte técnico" class="imagen-banner" width="250">
+            </div>
+
+            <div class="panel-derecho">
+                <div class="card-form">
+                    <form id="reporteForm">
+                        <fieldset>
+                            <legend>Datos del usuario</legend>
+
+                            <div class="campo">
+                                <label for="nomina">No. Nómina:</label>
+                                <input type="text" id="nomina" name="nomina" required autocomplete="off">
+                            </div>
+
+                            <div class="campo">
+                                <label for="password">Contraseña:</label>
+                                <input type="password" id="password" name="password" required>
+                            </div>
+
+                            <div class="campo">
+                                <label for="maquina">No. Máquina:</label>
+                                <input type="text" id="maquina" name="maquina" required>
+                            </div>
+
+                            <div class="campo">
+                                <label for="area">Área:</label>
+                                <input list="listaAreas" id="area" name="area" placeholder="Selecciona área" required>
+                                <datalist id="listaAreas">
+                                    <option value="Producción"></option>
+                                    <option value="Mantenimiento"></option>
+                                    <option value="Calidad"></option>
+                                    <option value="Ensamble"></option>
+                                    <option value="Sistemas"></option>
+                                </datalist>
+                            </div>
+                        </fieldset>
+
+                        <div class="botones-contenedor">
+                            <button type="button" id="btnCancelar" class="btn btn-cancelar">Cancelar</button>
+                            <button type="submit" id="btnFolio" class="btn btn-aceptar">Aceptar</button>
+                        </div>
+                        <p id="mensajeAcceso" role="status" aria-live="polite" style="color: red; margin-top: 10px;"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reporteForm = document.getElementById('reporteForm');
+            const mensajeAcceso = document.getElementById('mensajeAcceso');
+            const btnFolio = document.getElementById('btnFolio');
+            let usuariosAutorizados = [];
+
+            const cargarUsuarios = async () => {
+                try {
+                    const response = await fetch('Acceso.json');
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (Array.isArray(data)) {
+                        usuariosAutorizados = data;
+                    } else {
+                        throw new Error('El archivo Acceso.json no contiene una lista válida.');
+                    }
+                } catch (error) {
+                    console.error('Error al cargar Acceso.json:', error);
+                    mensajeAcceso.textContent = 'Atención: No se pudo cargar la base de datos de usuarios.';
+                }
+            };
+
+            const validarCredenciales = (nomina, password) => {
+                const nominaLimpia = String(nomina).trim();
+                const passwordLimpia = String(password).trim();
+
+                return usuariosAutorizados.some(usuario => {
+                    const nominaBD = String(usuario["No. Nomina"] || usuario.nomina || '').trim();
+                    const passwordBD = String(usuario["Contraseña"] || usuario.password || '').trim();
+                    const estaConfirmado = usuario["Confirmado"] === true;
+
+                    return estaConfirmado && nominaBD === nominaLimpia && passwordBD === passwordLimpia;
+                });
+            };
+
+            cargarUsuarios();
+
+            document.getElementById('btnCancelar').addEventListener('click', () => {
+                reporteForm.reset();
+                mensajeAcceso.textContent = '';
+            });
+
+            reporteForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                mensajeAcceso.textContent = '';
+
+                const nomina = document.getElementById('nomina').value;
+                const password = document.getElementById('password').value;
+
+                if (usuariosAutorizados.length === 0) {
+                    mensajeAcceso.textContent = 'Los datos de acceso aún no están disponibles.';
+                    return;
+                }
+
+                if (validarCredenciales(nomina, password)) {
+                    mensajeAcceso.style.color = 'green';
+                    mensajeAcceso.textContent = 'Acceso concedido. Redireccionando...';
+
+                    setTimeout(() => {
+                        window.location.href = 'secundario.html';
+                    }, 800);
+                } else {
+                    mensajeAcceso.style.color = 'red';
+                    mensajeAcceso.textContent = 'Nómina o contraseña incorrecta.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
