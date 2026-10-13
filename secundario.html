@@ -106,6 +106,12 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .mensaje-estado {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            min-height: 20px;
+        }
 
         @media (max-width: 800px) {
             .rejilla-dispositivos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -158,57 +164,129 @@
             <h3>Reconfirmar Credenciales</h3>
             <p>Por seguridad, ingresa nuevamente tus datos para autorizar la tarea.</p>
             
-            <input type="text" id="modalNomina" placeholder="No. Nómina">
+            <input type="text" id="modalNomina" placeholder="No. Nómina" autocomplete="off">
             <input type="password" id="modalPassword" placeholder="Contraseña">
             
             <div class="modal-botones">
                 <button type="button" id="btnCancelarModal" class="btn-modal-cancelar">Cancelar</button>
                 <button type="button" id="btnConfirmarModal" class="btn-modal-confirmar">Confirmar</button>
             </div>
+
+            <p id="mensajeModal" class="mensaje-estado" role="status" aria-live="polite"></p>
         </div>
     </div>
 
     <script>
-        const form = document.getElementById('tareaForm');
-        const modal = document.getElementById('modalReconfirmacion');
-        const btnCancelarModal = document.getElementById('btnCancelarModal');
-        const btnConfirmarModal = document.getElementById('btnConfirmarModal');
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('tareaForm');
+            const modal = document.getElementById('modalReconfirmacion');
+            const btnCancelarModal = document.getElementById('btnCancelarModal');
+            const btnConfirmarModal = document.getElementById('btnConfirmarModal');
+            const mensajeModal = document.getElementById('mensajeModal');
 
-        // 1. Cuando hacen clic en "Aceptar tarea"
-        form.addEventListener('submit', (evento) => {
-            evento.preventDefault();
-            const cantidades = [...document.querySelectorAll('.tarjeta-dispositivo input')];
-            
-            if (!cantidades.some((campo) => Number(campo.value) > 0)) {
-                alert('Indica una cantidad mayor que cero para al menos un dispositivo.');
-                return;
-            }
+            const inputNomina = document.getElementById('modalNomina');
+            const inputPassword = document.getElementById('modalPassword');
 
-            // Si todo está bien, mostramos la ventana modal en lugar de terminar directo
-            modal.style.display = 'flex';
-        });
+            let usuariosAutorizados = [];
 
-        // 2. Botón cancelar de la ventana modal
-        btnCancelarModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+            // Cargar usuarios desde Acceso.json al iniciar
+            const cargarUsuarios = async () => {
+                try {
+                    const response = await fetch('Acceso.json');
+                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                    
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        usuariosAutorizados = data;
+                    }
+                } catch (error) {
+                    console.error('Error al cargar Acceso.json:', error);
+                }
+            };
 
-        // 3. Botón confirmar dentro de la ventana modal
-        btnConfirmarModal.addEventListener('click', () => {
-            const nominaModal = document.getElementById('modalNomina').value.trim();
-            const passwordModal = document.getElementById('modalPassword').value.trim();
+            cargarUsuarios();
 
-            if (nominaModal === "" || passwordModal === "") {
-                alert('Por favor, ingresa tu número de nómina y contraseña.');
-                return;
-            }
+            // Validar si la nómina y contraseña existen en el arreglo
+            const validarCredenciales = (nomina, password) => {
+                const nominaLimpia = String(nomina).trim();
+                const passwordLimpia = String(password).trim();
 
-            // Aquí puedes realizar el envío final o validación que necesites
-            alert('¡Tarea reconfirmada y autorizada con éxito!');
-            modal.style.display = 'none';
-            
-            // Opcional: limpiar campos o enviar datos al servidor / ESP32
-            form.reset();
+                return usuariosAutorizados.some(usuario => {
+                    const nominaBD = String(usuario["No. Nomina"] || usuario.nomina || '').trim();
+                    const passwordBD = String(usuario["Contraseña"] || usuario.password || '').trim();
+                    const estaConfirmado = usuario["Confirmado"] === true;
+
+                    return estaConfirmado && nominaBD === nominaLimpia && passwordBD === passwordLimpia;
+                });
+            };
+
+            // 1. Mostrar la modal cuando hacen clic en "Aceptar tarea"
+            form.addEventListener('submit', (evento) => {
+                evento.preventDefault();
+                const cantidades = [...document.querySelectorAll('.tarjeta-dispositivo input')];
+                
+                if (!cantidades.some((campo) => Number(campo.value) > 0)) {
+                    alert('Indica una cantidad mayor que cero para al menos un dispositivo.');
+                    return;
+                }
+
+                // Limpiar campos y mensajes antes de abrir
+                inputNomina.value = '';
+                inputPassword.value = '';
+                mensajeModal.textContent = '';
+                btnConfirmarModal.disabled = false;
+                btnCancelarModal.disabled = false;
+
+                modal.style.display = 'flex';
+            });
+
+            // 2. Cerrar ventana modal
+            btnCancelarModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // 3. Confirmar credenciales dentro de la ventana modal
+            btnConfirmarModal.addEventListener('click', () => {
+                const nominaModal = inputNomina.value.trim();
+                const passwordModal = inputPassword.value.trim();
+
+                if (!nominaModal || !passwordModal) {
+                    mensajeModal.style.color = '#ef4444';
+                    mensajeModal.textContent = 'Por favor, ingresa tu nómina y contraseña.';
+                    return;
+                }
+
+                if (usuariosAutorizados.length === 0) {
+                    mensajeModal.style.color = '#ef4444';
+                    mensajeModal.textContent = 'No se pudo verificar la base de datos de usuarios.';
+                    return;
+                }
+
+                if (validarCredenciales(nominaModal, passwordModal)) {
+                    // Credenciales Correctas
+                    mensajeModal.style.color = '#22c55e';
+                    btnConfirmarModal.disabled = true;
+                    btnCancelarModal.disabled = true;
+
+                    let tiempoRestante = 5;
+                    mensajeModal.textContent = `¡Tarea autorizada! Redirigiendo en ${tiempoRestante}s...`;
+
+                    const temporizador = setInterval(() => {
+                        tiempoRestante -= 1;
+                        if (tiempoRestante > 0) {
+                            mensajeModal.textContent = `¡Tarea autorizada! Redirigiendo en ${tiempoRestante}s...`;
+                        } else {
+                            clearInterval(temporizador);
+                            window.location.href = 'index.html';
+                        }
+                    }, 1000);
+
+                } else {
+                    // Credenciales Incorrectas
+                    mensajeModal.style.color = '#ef4444';
+                    mensajeModal.textContent = 'Nómina o contraseña incorrecta.';
+                }
+            });
         });
     </script>
 </body>
