@@ -59,7 +59,7 @@ header h1 {
 /* --- CONTROL DEL TAMAÑO DE LA IMAGEN / LOGO --- */
 .imagen-banner {
   width: 100%;
-  max-width: 600px; /* Cambia este valor para ajustar el tamaño (ej. 200px, 300px) */
+  max-width:5600px; /* Cambia este valor para ajustar el tamaño (ej. 200px, 300px) */
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
