@@ -68,7 +68,7 @@ header h1 {
 /* --- CONTROL DEL TAMAÑO DE LA IMAGEN / LOGO --- */
 .imagen-banner {
   width: 100%;
-  max-width: 600px; /* Puedes ajustar este tamaño según prefieras */
+  max-width: 600px;
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -77,7 +77,7 @@ header h1 {
 
 /* --- CAPA QUE OSCURECE EL FONDO CUANDO EL FORMULARIO ESTÁ ACTIVO --- */
 .panel-derecho {
-  display: none; /* Oculto inicialmente */
+  display: none;
 }
 
 .panel-derecho.activo {
@@ -89,8 +89,8 @@ header h1 {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.70); /* Oscurece el fondo */
-  backdrop-filter: blur(6px); /* Desenfoca el fondo */
+  background-color: rgba(0, 0, 0, 0.70);
+  backdrop-filter: blur(6px);
   z-index: 999;
 }
 
@@ -100,7 +100,7 @@ header h1 {
   padding: 35px 40px;
   border-radius: 14px;
   width: 90%;
-  max-width: 650px; /* Tamaño más ancho para el cuadro */
+  max-width: 650px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
