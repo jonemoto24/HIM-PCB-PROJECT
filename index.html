@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso y Reporte - PCB Electronics</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos directos para controlar la visibilidad inicial */
+        .panel-izquierdo {
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .panel-izquierdo:hover {
+            transform: scale(1.05); /* Efecto visual al pasar el cursor */
+        }
+
+        /* Ocultar el panel derecho por defecto */
+        .panel-derecho {
+            display: none; 
+        }
+
+        /* Clase dinámica para mostrar el formulario */
+        .panel-derecho.activo {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
@@ -14,11 +36,13 @@
 
     <main class="main-container">
         <div class="seccion-principal">
-            <div class="panel-izquierdo">
-                <img src="logo_PCB.jpg" alt="Imagen de soporte técnico" class="imagen-banner" width="250">
+            <!-- Panel con el logo que funciona como botón de inicio -->
+            <div class="panel-izquierdo" id="panelLogo">
+                <img src="logo_PCB.jpg" alt="Haz clic aquí para ingresar datos" class="imagen-banner" width="250">
             </div>
 
-            <div class="panel-derecho">
+            <!-- Panel con el formulario (inicialmente oculto) -->
+            <div class="panel-derecho" id="panelFormulario">
                 <div class="card-form">
                     <form id="reporteForm">
                         <fieldset>
@@ -75,7 +99,14 @@
             const reporteForm = document.getElementById('reporteForm');
             const mensajeAcceso = document.getElementById('mensajeAcceso');
             const btnFolio = document.getElementById('btnFolio');
+            const panelLogo = document.getElementById('panelLogo');
+            const panelFormulario = document.getElementById('panelFormulario');
             let usuariosAutorizados = [];
+
+            // Evento para mostrar el formulario al hacer clic en el logo
+            panelLogo.addEventListener('click', () => {
+                panelFormulario.classList.add('activo');
+            });
 
             const cargarUsuarios = async () => {
                 try {
@@ -115,6 +146,8 @@
             document.getElementById('btnCancelar').addEventListener('click', () => {
                 reporteForm.reset();
                 mensajeAcceso.textContent = '';
+                // Opcional: Si quieres ocultar el formulario de nuevo al pulsar cancelar:
+                panelFormulario.classList.remove('activo');
             });
 
             reporteForm.addEventListener('submit', (event) => {
