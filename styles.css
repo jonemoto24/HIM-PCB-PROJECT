@@ -1,18 +1,61 @@
-/* --- ESTRUCTURA PRINCIPAL (CENTRADA) --- */
-.seccion-principal {
-  display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  align-items: center;     /* Centra verticalmente */
-  min-height: calc(100vh - 120px); /* Ocupa el alto visible de pantalla */
-  margin-top: 0;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* Panel izquierdo (Logo) */
-.panel-izquierdo {
-  cursor: pointer;
+/* Imagen de fondo en toda la pantalla */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-image: url('fondo.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background-color: rgba(5, 4, 61, 0.9);
+  padding: 15px 30px;
+  color: white;
+  position: relative;
+  z-index: 10;
+}
+
+/* Título del header */
+header h1 {
+  font-size: 32px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.reporte-banner h1 {
+  font-size: 26px;
+  color: #05043d;
+  margin: 20px 0;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+.main-container {
+  padding: 20px;
+}
+
+/* --- ESTRUCTURA CENTRADA --- */
+.seccion-principal {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: calc(100vh - 100px);
+}
+
+/* Panel izquierdo para la imagen/logo */
+.panel-izquierdo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
 
@@ -20,44 +63,135 @@
   transform: scale(1.05);
 }
 
-/* Oculta completamente el logo al hacer clic */
+/* Oculta completamente el logo al dar clic */
 .panel-izquierdo.oculto {
   display: none !important;
 }
 
-/* Panel derecho (Formulario) */
-.panel-derecho {
-  display: none; /* Oculto por defecto al iniciar */
+/* --- CONTROL DEL TAMAÑO DE LA IMAGEN / LOGO --- */
+.imagen-banner {
   width: 100%;
-  max-width: 600px; /* Tamaño del contenedor */
-  justify-content: center;
+  max-width: 450px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  object-fit: contain;
 }
 
-/* Se muestra centrado cuando se activa */
+/* --- CAPA QUE OSCURECE EL FONDO CUANDO EL FORMULARIO ESTÁ ACTIVO --- */
+.panel-derecho {
+  display: none; /* Oculto inicialmente */
+}
+
 .panel-derecho.activo {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.70); /* Oscurece el fondo */
+  backdrop-filter: blur(6px); /* Desenfoca la imagen de fondo */
+  z-index: 999;
 }
 
-/* Tarjeta del formulario más amplia y responsiva */
+/* --- TARJETA DEL FORMULARIO AMPLIADA --- */
 .card-form {
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 30px;
-  border-radius: 12px;
-  width: 100%; /* Ocupa todo el max-width de 600px */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.98);
+  padding: 35px 40px;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 650px; /* Tamaño más ancho para el cuadro */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* Aumentar tamaño de inputs y labels */
+fieldset {
+  border: 1.5px solid #222222;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+legend {
+  font-weight: bold;
+  padding: 0 10px;
+  color: #000000;
+  font-size: 17px;
+}
+
+.campo {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
 .campo label {
   font-weight: 600;
   margin-bottom: 6px;
   font-size: 15px;
+  color: #222;
 }
 
 .campo input {
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #bbb;
   border-radius: 6px;
   font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.campo input:focus {
+  border-color: #20b09d;
+}
+
+/* Botones */
+.botones-contenedor {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.btn-cancelar {
+  background-color: #d9534f;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #c9302c;
+}
+
+.btn-aceptar {
+  background-color: #2fd3bd;
+  color: white;
+}
+
+.btn-aceptar:hover {
+  background-color: #20b09d;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .card-form {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .imagen-banner {
+    max-width: 300px;
+  }
 }
