@@ -6,7 +6,6 @@
     <title>Acceso y Reporte - PCB Electronics</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Estilos directos para controlar la visibilidad inicial */
         .panel-izquierdo {
             cursor: pointer;
             text-align: center;
@@ -14,17 +13,22 @@
         }
 
         .panel-izquierdo:hover {
-            transform: scale(1.05); /* Efecto visual al pasar el cursor */
+            transform: scale(1.05);
         }
 
-        /* Ocultar el panel derecho por defecto */
+        /* El formulario inicia oculto */
         .panel-derecho {
             display: none; 
         }
 
-        /* Clase dinámica para mostrar el formulario */
+        /* Cuando el formulario está activo, se muestra */
         .panel-derecho.activo {
             display: block;
+        }
+
+        /* Clase para ocultar completamente el logo */
+        .oculto {
+            display: none !important;
         }
     </style>
 </head>
@@ -36,12 +40,12 @@
 
     <main class="main-container">
         <div class="seccion-principal">
-            <!-- Panel con el logo que funciona como botón de inicio -->
+            <!-- Panel con la imagen que se ocultará al hacer clic -->
             <div class="panel-izquierdo" id="panelLogo">
                 <img src="logo_PCB.jpg" alt="Haz clic aquí para ingresar datos" class="imagen-banner" width="250">
             </div>
 
-            <!-- Panel con el formulario (inicialmente oculto) -->
+            <!-- Panel con el formulario que quedará solo en pantalla -->
             <div class="panel-derecho" id="panelFormulario">
                 <div class="card-form">
                     <form id="reporteForm">
@@ -103,8 +107,9 @@
             const panelFormulario = document.getElementById('panelFormulario');
             let usuariosAutorizados = [];
 
-            // Evento para mostrar el formulario al hacer clic en el logo
+            // Al hacer clic, ocultamos el logo y mostramos únicamente el formulario
             panelLogo.addEventListener('click', () => {
+                panelLogo.classList.add('oculto');
                 panelFormulario.classList.add('activo');
             });
 
@@ -143,11 +148,12 @@
 
             cargarUsuarios();
 
+            // Al hacer clic en Cancelar, limpia el formulario, restaura el logo y oculta el cuadro
             document.getElementById('btnCancelar').addEventListener('click', () => {
                 reporteForm.reset();
                 mensajeAcceso.textContent = '';
-                // Opcional: Si quieres ocultar el formulario de nuevo al pulsar cancelar:
                 panelFormulario.classList.remove('activo');
+                panelLogo.classList.remove('oculto');
             });
 
             reporteForm.addEventListener('submit', (event) => {
