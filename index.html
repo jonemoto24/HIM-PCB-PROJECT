@@ -6,6 +6,16 @@
     <title>Acceso y Reporte - PCB Electronics</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Centrar todo el contenido vertical y horizontalmente */
+        .seccion-principal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px); /* Ajusta según la altura de tu header */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
         .panel-izquierdo {
             cursor: pointer;
             text-align: center;
@@ -16,14 +26,39 @@
             transform: scale(1.05);
         }
 
-        /* El formulario inicia oculto */
+        /* Hacer la tarjeta del formulario más grande y centrada */
         .panel-derecho {
             display: none; 
+            width: 100%;
+            max-width: 550px; /* Tamaño más amplio para el cuadro */
         }
 
-        /* Cuando el formulario está activo, se muestra */
+        /* Cuando está activo se muestra centrado */
         .panel-derecho.activo {
             display: block;
+        }
+
+        /* Aumentar tamaño de letra y espacio dentro de la tarjeta */
+        .card-form {
+            padding: 25px;
+            font-size: 1.1rem;
+        }
+
+        .campo {
+            margin-bottom: 15px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
 
         /* Clase para ocultar completamente el logo */
@@ -40,12 +75,12 @@
 
     <main class="main-container">
         <div class="seccion-principal">
-            <!-- Panel con la imagen que se ocultará al hacer clic -->
+            <!-- Panel con la imagen inicial -->
             <div class="panel-izquierdo" id="panelLogo">
-                <img src="logo_PCB.jpg" alt="Haz clic aquí para ingresar datos" class="imagen-banner" width="250">
+                <img src="logo_PCB.jpg" alt="Haz clic aquí para ingresar datos" class="imagen-banner" width="300">
             </div>
 
-            <!-- Panel con el formulario que quedará solo en pantalla -->
+            <!-- Panel con el formulario ampliado y centrado -->
             <div class="panel-derecho" id="panelFormulario">
                 <div class="card-form">
                     <form id="reporteForm">
@@ -107,7 +142,7 @@
             const panelFormulario = document.getElementById('panelFormulario');
             let usuariosAutorizados = [];
 
-            // Al hacer clic, ocultamos el logo y mostramos únicamente el formulario
+            // Oculta el logo y muestra el formulario centrado
             panelLogo.addEventListener('click', () => {
                 panelLogo.classList.add('oculto');
                 panelFormulario.classList.add('activo');
@@ -148,7 +183,7 @@
 
             cargarUsuarios();
 
-            // Al hacer clic en Cancelar, limpia el formulario, restaura el logo y oculta el cuadro
+            // Restaurar estado inicial al cancelar
             document.getElementById('btnCancelar').addEventListener('click', () => {
                 reporteForm.reset();
                 mensajeAcceso.textContent = '';
