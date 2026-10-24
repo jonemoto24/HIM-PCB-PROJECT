@@ -286,10 +286,10 @@
 
                     const datosProduccion = {
                         nomina: nominaModal,
-                        bocinas: document.getElementById('cantidad1'),
-                        camaras: document.getElementById('cantidad2'),
-                        pantallas: document.getElementById('cantidad3'),
-                        personalizado: document.getElementById('cantidadPersonalizado'),
+                        bocinas: document.getElementById('cantidad1').value || 0,
+                        camaras: document.getElementById('cantidad2').value || 0,
+                        pantallas: document.getElementById('cantidad3').value || 0,
+                        personalizado: document.getElementById('cantidadPersonalizado').value || 0
                     };
 
                     await guardarEnGoogleSheets(datosProduccion);
