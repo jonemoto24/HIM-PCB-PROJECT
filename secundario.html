@@ -17,11 +17,16 @@
             box-shadow: 0 4px 14px #00000014;
         }
         .dispositivos h2 { text-align: center; margin-top: 0; }
+        
+        /* MODIFICADO: Grid configurado a 2 columnas (2 arriba y 2 abajo) */
         .rejilla-dispositivos {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 18px;
+            max-width: 700px; /* Limita el ancho para mantener una proporción visual adecuada */
+            margin: 0 auto;  /* Centra la retícula */
         }
+        
         .tarjeta-dispositivo {
             padding: 14px;
             text-align: center;
@@ -113,9 +118,7 @@
             min-height: 20px;
         }
 
-        @media (max-width: 800px) {
-            .rejilla-dispositivos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
+        /* MEDIA QUERIES */
         @media (max-width: 480px) {
             .rejilla-dispositivos { grid-template-columns: 1fr; }
             .dispositivos { padding: 18px; }
@@ -142,7 +145,7 @@
                     <input type="number" id="cantidad2" name="dispositivo2" min="0" step="1" value="0">
                 </div>
                 <div class="tarjeta-dispositivo">
-                    <img src="pantalla_sec.avif" alt="Imagen del dispositivo 3">
+                    <img src="Pantalla_sec.avif" alt="Imagen del dispositivo 3">
                     <label for="cantidad3">Pantalla</label>
                     <input type="number" id="cantidad3" name="dispositivo3" min="0" step="1" value="0">
                 </div>
@@ -217,7 +220,6 @@
                 });
             };
 
-            // Envío optimizado para Google Apps Script usando URLSearchParams
             const guardarEnGoogleSheets = async (datosProduccion) => {
                 try {
                     const params = new URLSearchParams();
